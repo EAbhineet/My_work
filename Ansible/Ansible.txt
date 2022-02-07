@@ -1,0 +1,122 @@
+   
+Configuration Management tools: 
+================================
+These tools are based on Push and pull based mechanism.
+
+PUSH: pushing the config from master machine to all the n servers
+ANSIBLE is a push based mechanism. It is agentless. Written in YAML
+
+PULL: In this agents runs on all the slave servers and these agenets will pull the config changes from master.
+Chef and puppet are pull based. Domain specific languages to write the codes.(kind of similar to ruby/shell)
+
+
+ANSIBLE:
+========
+1. Ansible have options for grouping the servers -- like DB servers in 1 group, Web server in diff...and likewise.
+2. Two ways to write ansible script: 1. adhoc commands 2. Playbooks
+3. ansible all<hosts_group> -m <module> -a <attributes>
+4. ansible-doc -s <module> : to get the documentation of specific module
+
+  1  cd
+    2  apt install ansible
+    3  vi /etc/ansible/
+    4  cd /etc/ansible/
+    5  ls
+    6  vi ansible.cfg
+    7  ls
+    8  vi ansible.cfg
+    9  vi hosts
+   10  ssh-keygen
+   11  cat /root/.ssh/id_rsa.pub (on master)
+   12  vi /root/.ssh/authorized_keys (on worker)
+   13  vi hosts
+   14  ansible all -m ping
+    ansible dbserver -m ping
+   15  history
+   
+<<HOST FILE /etc/ansible/>>
+[dbserver]
+172.31.34.48
+[webserver]
+172.31.10.25
+
+##ADHOC COMMAND##
+ 7  ansible-doc -s apt
+    9  ansible webserver -m apt -a "name=apache2 state=present"
+   10  ansible webserver -m apt -a "name=apache2 state=absent"
+   11  ansible webserver -m apt -a "name=apache2 state=present"
+   
+#playbook structure
+playbook ==> plays ==> tasks ==> modules
+
+======================================================================================
+ 1  cd
+    2  ansible dbserver -m ping
+    3  ansible all -m ping
+    4  ansible-doc --list
+    5  ansible-doc -s ping
+    7  ansible-doc -s apt
+    9  ansible webserver -m apt -a "name=apache2 state=present"
+   10  ansible webserver -m apt -a "name=apache2 state=absent"
+   11  ansible webserver -m apt -a "name=apache2 state=present"
+   12  history
+   13  mkdir playbooks
+   14  cd playbooks/
+   15  vi 1.yaml
+   16  ansible webserver -m apt -a "name=apache2 state=absent"
+   17  ansible-playbook 1.yaml --syntax-check
+   18  vi 1.yaml
+   19  ansible-playbook 1.yaml --syntax-check
+   20  vi 1.yaml
+   21  ansible-playbook 1.yaml
+   22  vi 1.yaml
+   23  ansible-playbook 1.yaml
+   24  cat 1.yaml
+   25  history
+
+
+
+- name: First play
+  hosts: webserver
+  become: yes
+  tasks:
+     - name: Install apache server
+       apt:
+          name: apache2
+          state: absent
+     - name: Restart the apache service
+       service:
+          name: apache2
+          state: restarted
+
+#COPY FILES
+===========
+- name: test playbook
+  hosts: webserver
+  become: yes
+  tasks:
+      - name: copy files
+        copy:
+           src: 1.yaml
+           dest: /opt
+
+#CREATE USER
+============
+- name: Create user
+  hosts: webserver
+  become: yes
+  tasks:
+     - name: Create uset myuser
+       user:
+        uid: 1112
+        name: myuser
+        home: /home/myuser
+        shell: /bin/bash
+
+======================================================================
+ssh-copy-id -i ~/.ssh/mykey user@host
+
+
+Gathering facts task while running ansible playbook:
+====================================================
+Complete detailed info about the server
