@@ -40,6 +40,28 @@ ANSIBLE:
 [webserver]
 172.31.10.25
 
+
+
+
+# Inventory File
+------------------------
+# Web Servers
+web1 ansible_host=server1.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web2 ansible_host=server2.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+web3 ansible_host=server3.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
+
+# Database Servers
+db1 ansible_host=server4.com ansible_connection=winrm ansible_user=administrator ansible_password=Password123!
+
+[web_servers]
+web1
+web2
+web3
+
+[db_servers]
+db1
+
+===============================================================================================
 ##ADHOC COMMAND##
  7  ansible-doc -s apt
     9  ansible webserver -m apt -a "name=apache2 state=present"
