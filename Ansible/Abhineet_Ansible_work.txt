@@ -42,9 +42,9 @@ ANSIBLE:
 
 
 
-
+_________________
 # Inventory File
-------------------------
+================
 # Web Servers
 web1 ansible_host=server1.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
 web2 ansible_host=server2.com ansible_connection=ssh ansible_user=root ansible_ssh_pass=Password123!
@@ -60,8 +60,13 @@ web3
 
 [db_servers]
 db1
+#create a group of groups in inventory
+[all_servers:children]
+web_servers
+db_servers
 
 ===============================================================================================
+
 ##ADHOC COMMAND##
  7  ansible-doc -s apt
     9  ansible webserver -m apt -a "name=apache2 state=present"
@@ -96,14 +101,14 @@ playbook ==> plays ==> tasks ==> modules
    24  cat 1.yaml
    25  history
 
-
+===============================================================================================
 
 - name: First play
   hosts: webserver
   become: yes
   tasks:
      - name: Install apache server
-       apt:
+       apt(ubuntu)/yum(linux): 
           name: apache2
           state: absent
      - name: Restart the apache service
@@ -174,3 +179,7 @@ Complete detailed info about the server
         
      # ADHOC COMMAND FOR ABOVE:
      ansible master_server -m copy -a "src=~/Downloads/logos dest=/var/www/html/ owner=apache group=apache mode=0644 " -i ansible_hosts -b
+
+
+=====================================================================================
+
