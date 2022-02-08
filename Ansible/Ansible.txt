@@ -120,3 +120,35 @@ ssh-copy-id -i ~/.ssh/mykey user@host
 Gathering facts task while running ansible playbook:
 ====================================================
 Complete detailed info about the server
+
+
+# COPY CONTENTS OF DIRECTORY 
+==============================
+- name: Ansible Copy Directory Example Local to Remote
+  hosts: remoteserver
+  tasks:
+    - name: Copying the Directory's contents (sub directories/files)
+      become: true 
+      copy:
+        src: ~/Downloads/logos/ # IF YOU PUT SLASH HERE, IT WILL COPY THE files/sub-directories from source to destination folder
+        dest: /var/www/html
+        owner: apache
+        group: apache        
+        mode: 0644
+        
+#Copy directory and it’s content in a recursive manner
+======================================================
+- name: Ansible Copy Directory Example Local to Remote
+  hosts: remoteserver
+  tasks:
+    - name: Copying the Directory and its contents
+      become: true 
+      copy:
+        src: ~/Downloads/logos # IF YOU DONT PUT SLASH HERE, IT WILL COPY THE source directories to destination folder
+        dest: /var/www/html
+        owner: apache
+        group: apache        
+        mode: 0644
+        
+     # ADHOC COMMAND FOR ABOVE:
+     ansible master_server -m copy -a "src=~/Downloads/logos dest=/var/www/html/ owner=apache group=apache mode=0644 " -i ansible_hosts -b
