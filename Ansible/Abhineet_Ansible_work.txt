@@ -180,6 +180,25 @@ Complete detailed info about the server
      # ADHOC COMMAND FOR ABOVE:
      ansible master_server -m copy -a "src=~/Downloads/logos dest=/var/www/html/ owner=apache group=apache mode=0644 " -i ansible_hosts -b
 
-
 =====================================================================================
+
+to execute the commands via ansible:
+====================================
+ansible all -a "ls -ltr /opt/finance" -i inventory (inventory is the list of hosts)
+
+
+Ansible Archive Module : tar.gz path and copy to destination as games.tar.gz with the user as owner of the file
+===============================================================================================================
+- name: Ansible Archive Module
+  hosts: stapp01, stapp02, stapp03
+  become: yes
+  tasks:
+    - name: As per the task create the archive file and set the owner
+      archive:
+        path: /usr/src/finance/
+        dest: /opt/finance/games.tar.gz
+        format: gz
+        force_archive: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
 
